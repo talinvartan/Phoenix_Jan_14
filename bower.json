@@ -1,0 +1,18 @@
+{
+  "name": "Phoenix_Jan_14",
+  "version": "0.0.0",
+  "authors": [
+    "pvtech <tech@golivelabs.io>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.3"
+  }
+}
