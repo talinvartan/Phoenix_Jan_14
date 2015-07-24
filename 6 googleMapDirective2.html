@@ -1,17 +1,101 @@
 <!DOCTYPE html>
 <html ng-app="myApp">
-<head lang="en">
+<head lang="en" >
     <meta charset="UTF-8">
     <title></title>
-    <link rel="stylesheet" href="../base.css"/>
+    <script src="bower_components/angularjs/angular.js"></script>
+    <script>
+        angular.module('myApp',[]).directive('googleMap',function(){
+            return {
+                restrict: 'AE',
+                templateUrl:'partials/_googleMapDirective.html',
+                compile: function(element,attrs){
+
+                    var directionDisplay;
+                    var directionService;
+
+
+                    var map;
+                    var begin;
+                    var end;
+                    window.googlemaps_initialize = function(){
+                        navigator.geolocation.getCurrentPosition(function(current){
+                            console.log('initializing map');
+                            var mapOptions = {
+                                zoom:8,
+                                center: new google.maps.LatLng(current.coords.latitude,current.coords.longitude)
+                            };
+                            map = new google.maps.Map(element[0].lastElementChild,mapOptions);
+                            directionDisplay = new google.maps.DirectionsRenderer();
+                            directionService = new google.maps.DirectionsService();
+                            directionDisplay.setMap(map);
+                            begin = new google.maps.Marker({
+                                position:mapOptions.center,
+                                map:map
+                            });
+                            console.log(mapOptions.center);
+                            console.log(element[0]);
+                            google.maps.event.addListener(map, 'click', function(event) {
+                                console.log(event.latLng);
+                                end = new google.maps.Marker({
+                                    position:event.latLng,
+                                    map:map
+                                });
+                            });
+                        })
+
+                    };
+                    function loadScript(){
+                        var script = document.createElement('script');
+                        script.type = 'text/javascript';
+                        script.src = 'https://maps.googleapis.com/maps/api/js?v=3&'+
+                                'callback=googlemaps_initialize';
+                        document.head.appendChild(script);//critical part for add script element to DOM
+                        script.addEventListener('load',function(){
+                            console.log('script loaded');
+
+                        });
+                    }
+                    if ( document.readyState === 'complete') loadScript();
+                    else{ document.addEventListener('readystatechange',function(){
+                        if (document.readyState === 'complete') loadScript();
+                    });
+                    }
+
+                    return {
+                        pre: function(scope,ielement,attrs){
+
+                        },
+                        post:function(scope,ielement,attrs){
+                            var btn = document.getElementsByTagName('button')[0];
+                            angular.element(btn).on('click',function(event){
+                                console.log('click map');
+                                var request = {
+                                    origin:begin.position,
+                                    destination:end.position,
+                                    travelMode:google.maps.TravelMode.DRIVING
+                                };
+                                directionService.route(request,function(response,status){
+                                    if ( status == google.maps.DirectionsStatus.OK){
+                                        directionDisplay.setDirections(response);
+                                        directionDisplay.setMap(map);
+                                        directionDisplay.setPanel(document.getElementById('directions-panel'));
+                                        console.log(response);
+
+                                    }
+                                });
+                            });
+
+                        }
+                    };
+                }
+            }
+        });
+    </script>
+
 </head>
 <body>
-    <google-map></google-map>
-    <script src="../bower_components/angular/angular.js"></script>
-    <script src="6%20googlemapdirective.js"></script>
-    <script></script>
-    <script>
-        angular.module('myApp', ['googleMapLibrary']);
-    </script>
+<google-map></google-map>
 </body>
 </html>
+

@@ -1,16 +1,35 @@
 <style>
-    google-map, [google-map] {
-        display: block;
-        height: 50vh;
-        width: 50vw;
-        margin: 10vh auto;
-        background-color: #aaa;
+    google-map,[google-map]{
+        display:block;
+        height:50vh;
+        width:50vw;
+        margin:10vh auto;
+        /* background-color:#aaa;*/
+        position:relative;
     }
-    google-map > div {
+    google-map > div{
+        height:100%;
+        width:100%;
+    }
+    google-map > button{
+        position:absolute;
+        right:5px;
+        top:5px;
+        z-index: 2000;
+        background-color: rgba(0,0,0,0.5);
+        color:white;
+    }
+
+    #directions-panel{
         height: 100%;
-        width: 100%;
+        width: 390px;
+        overflow: auto;
     }
+
 </style>
+
+<button>Show Directions</button>
+<div id="directions-panel"></div>
 <div>
-    <!--This element will be provided for google-maps-->
+    <!--this element will be provided for google-map-->
 </div>
